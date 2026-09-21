@@ -6,6 +6,7 @@ import { PromoDetailsPanel } from '../components/PromoDetailsPanel';
 import { useRideContext } from '../contexts/RideContext';
 import { apiPost } from '../config/api';
 import { MapLibreMap, MapMarker } from '../components/MapLibreMap';
+import { useNearbyDrivers, LUSAKA_DEFAULT } from '../hooks/useNearbyDrivers';
 import {
   BackendRideOption,
   getVehicleConfig,
@@ -90,6 +91,7 @@ export const SelectRide: React.FC<SelectRideProps> = ({
   const [error, setError] = useState('');
   const [selectedRide, setSelectedRide] = useState<BackendRideOption | null>(null);
   const [routePolyline, setRoutePolyline] = useState<string | null>(null);
+  const nearbyDrivers = useNearbyDrivers(pickupCoords?.lat ?? null, pickupCoords?.lng ?? null);
 
   // Promo discount (30%)
   const promoDiscount = 30;
@@ -418,10 +420,10 @@ export const SelectRide: React.FC<SelectRideProps> = ({
         <MapLibreMap
           center={pickupCoords?.lat && pickupCoords?.lng 
             ? { lat: pickupCoords.lat, lng: pickupCoords.lng } 
-            : { lat: -26.2041, lng: 28.0473 }}
+            : LUSAKA_DEFAULT}
           zoom={13}
-          markers={mapMarkers}
-          polyline={routePolyline ?? undefined}
+  markers={[...mapMarkers, ...nearbyDrivers]}
+  polyline={routePolyline ?? undefined}
           pickupEta={selectedRide?.enabled ? selectedRide.eta : undefined}
           arrivalTime={selectedRide?.enabled ? getArrivalTime() || undefined : undefined}
           fitBounds={mapMarkers.length > 1}

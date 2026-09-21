@@ -5,6 +5,7 @@ import { X, Plus, Calendar, User, Briefcase, ChevronDown, RefreshCw, Users } fro
 import { useGlobalCart } from '../contexts/GlobalCartContext';
 import { apiPost } from '../config/api';
 import { MapLibreMap, MapMarker } from '../components/MapLibreMap';
+import { useNearbyDrivers, LUSAKA_DEFAULT } from '../hooks/useNearbyDrivers';
 import {
   BackendRideOption,
   getVehicleConfig,
@@ -72,6 +73,7 @@ export function FoodDelivery() {
   const [error, setError] = useState('');
   const [selectedOption, setSelectedOption] = useState<BackendRideOption | null>(null);
   const [routePolyline, setRoutePolyline] = useState<string | null>(null);
+  const nearbyDrivers = useNearbyDrivers(routeData?.deliveryCoords?.lat ?? null, routeData?.deliveryCoords?.lng ?? null);
 
   const [selectedFilter, setSelectedFilter] = useState<FilterTab>('standard');
   const [profileToggle, setProfileToggle] = useState<'personal' | 'business'>('personal');
@@ -437,8 +439,8 @@ export function FoodDelivery() {
       });
     }
     
-    return markers;
-  }, [routeData]);
+    return [...markers, ...nearbyDrivers];
+  }, [routeData, nearbyDrivers]);
 
   // Calculate arrival time
   const getArrivalTime = useCallback(() => {
@@ -455,7 +457,7 @@ export function FoodDelivery() {
         <MapLibreMap
           center={routeData?.storeLocation?.lat && routeData?.storeLocation?.lng 
             ? { lat: routeData.storeLocation.lat, lng: routeData.storeLocation.lng } 
-            : { lat: -26.2041, lng: 28.0473 }}
+            : LUSAKA_DEFAULT}
           zoom={13}
           markers={mapMarkers}
           polyline={routePolyline ?? undefined}

@@ -9,6 +9,7 @@ import { MapLibreMap } from '../components/MapLibreMap';
 import { getRecentAddresses, reverseGeocode, GeoapifyAddress } from '../services/geoapifyService';
 import { useRideContext } from '../contexts/RideContext';
 import { useGeolocation } from '../hooks/useGeolocation';
+import { useNearbyDrivers, LUSAKA_DEFAULT } from '../hooks/useNearbyDrivers';
 
 interface DashboardProps {
   onSearchSelect: (address: string) => void;
@@ -21,6 +22,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSearchSelect }) => {
   const { latitude, longitude, loading: locationLoading, error: locationError } = useGeolocation();
   const [recentAddresses, setRecentAddresses] = useState<GeoapifyAddress[]>([]);
   const [isLoadingRecentAddress, setIsLoadingRecentAddress] = useState(false);
+  const nearbyDrivers = useNearbyDrivers(latitude, longitude);
 
   const maxPanelHeight = 600;
   const minPanelHeight = 175;
@@ -134,9 +136,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSearchSelect }) => {
       {/* Real MapLibre Map Background */}
       <div className="absolute inset-0 z-0">
         <MapLibreMap
-          center={latitude && longitude ? { lat: latitude, lng: longitude } : { lat: -26.2041, lng: 28.0473 }}
-          zoom={13}
-          fitBounds={false}
+  center={latitude && longitude ? { lat: latitude, lng: longitude } : LUSAKA_DEFAULT}
+  zoom={13}
+  markers={nearbyDrivers}
+  fitBounds={false}
           className="w-full h-full"
         />
       </div>

@@ -42,6 +42,8 @@ export interface MapMarker {
   lat: number;
   lng: number;
   label?: string;
+  vehicleType?: string;
+  vehicleColor?: string;
 }
 
 export interface RoutePolyline {
@@ -351,7 +353,7 @@ const createArrivalCard = (arrivalTime: string): HTMLElement => {
 };
 
 export const MapLibreMap: React.FC<MapLibreMapProps> = ({
-  center = { lat: -26.2041, lng: 28.0473 }, // Default to Johannesburg, South Africa
+  center = { lat: -15.3875, lng: 28.3228 }, // Lusaka fallback while location is unavailable
   zoom = 13,
   markers = [],
   polyline: encodedPolyline,
@@ -427,7 +429,9 @@ export const MapLibreMap: React.FC<MapLibreMapProps> = ({
         markersRef.current[marker.id].setLngLat([marker.lng, marker.lat]);
       } else {
         // Create new marker
-        const el = createMarkerElement(marker.type, marker.label);
+        const el = marker.type === 'driver'
+          ? createVehicleElement(marker.vehicleType, marker.vehicleColor)
+          : createMarkerElement(marker.type, marker.label);
         const newMarker = new maplibregl.Marker({ element: el })
           .setLngLat([marker.lng, marker.lat])
           .addTo(map.current!);
