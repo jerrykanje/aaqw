@@ -325,6 +325,7 @@ export const SelectRide: React.FC<SelectRideProps> = ({
       
       // Navigate to confirm order with all ride/service data
       navigate('/confirm-order', {
+        replace: true,
         state: {
           // For service flows, pass orderType as the serviceType so ConfirmOrder can identify the flow
           orderType: isServiceFlow ? serviceType : 'ride',
@@ -440,6 +441,7 @@ export const SelectRide: React.FC<SelectRideProps> = ({
         <div className="bg-white rounded-2xl shadow-lg px-4 py-3 flex items-center gap-3">
           <button
             onClick={() => navigate('/your-route', {
+              replace: true,
               state: {
                 prefilledDestination: navDestination || destination,
                 prefilledPickup: navPickup || pickup,
@@ -456,6 +458,7 @@ export const SelectRide: React.FC<SelectRideProps> = ({
 
           <button
             onClick={() => navigate('/your-route', {
+              replace: true,
               state: {
                 highlightDestination: true,
                 prefilledDestination: navDestination || destination,
@@ -479,6 +482,7 @@ export const SelectRide: React.FC<SelectRideProps> = ({
 
           <button
             onClick={() => navigate('/your-route', {
+              replace: true,
               state: {
                 highlightAddStop: true,
                 prefilledDestination: navDestination || destination,

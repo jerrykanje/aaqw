@@ -119,7 +119,7 @@ export const OrderFoodies: React.FC = () => {
 
   const handleCompleteOrder = () => {
     if (cartCount === 0) return;
-    navigate('/foodies-route');
+    navigate('/foodies-route', { replace: true });
   };
 
   const containerVariants = {

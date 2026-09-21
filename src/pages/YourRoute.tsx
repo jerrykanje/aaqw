@@ -363,10 +363,11 @@ export const YourRoute: React.FC<YourRouteProps> = ({ onRouteComplete }) => {
       void handleEditModeComplete(newPickup, newDestination, newStops, newPickupCoords, newDestinationCoords, newStopCoords);
     } else if (checkFieldsFilled() && (serviceType === 'ride' || serviceType === 'package' || serviceType === 'truck')) {
       onRouteComplete?.(newPickup, newDestination, newStops);
-      navigate('/select-ride', {
-        state: {
-          serviceType,
-          pickup: newPickup,
+navigate('/select-ride', {
+      replace: true,
+      state: {
+        serviceType,
+        pickup: newPickup,
           destination: newDestination,
           stops: newStops,
           pickupCoords: newPickupCoords,
@@ -441,6 +442,7 @@ export const YourRoute: React.FC<YourRouteProps> = ({ onRouteComplete }) => {
 
     onRouteComplete?.(pickup, destination, stops);
     navigate('/select-ride', {
+      replace: true,
       state: {
         serviceType,
         pickup,

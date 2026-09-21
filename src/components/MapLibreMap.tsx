@@ -453,8 +453,8 @@ export const MapLibreMap: React.FC<MapLibreMapProps> = ({
       // pickup ETA bubble (start of the polyline) within the visible area.
       map.current.fitBounds(bounds, {
         padding: { top: 100, bottom: 220, left: 60, right: 60 },
-        maxZoom: 17,
-        duration: 1400,
+        maxZoom: 15,
+        duration: 700,
         easing: (t) => t * (2 - t),
         essential: true
       });

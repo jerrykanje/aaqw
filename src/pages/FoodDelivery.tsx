@@ -351,8 +351,9 @@ export function FoodDelivery() {
       ? { lat: deliveryCoords.lat, lng: deliveryCoords.lng }
       : undefined;
 
-    navigate('/confirm-order', {
-      state: {
+navigate('/confirm-order', {
+    replace: true,
+    state: {
         orderType: 'delivery',
         type: category,
         // Pass serviceType explicitly so ConfirmOrder doesn't have to infer it
