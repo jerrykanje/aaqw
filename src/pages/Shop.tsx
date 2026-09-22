@@ -180,7 +180,7 @@ export const Shop: React.FC = () => {
     } else if (category === 'hardware') {
       orderPath = '/order-hardware';
     } else if (category === 'market') {
-      orderPath = '/order-foodies';
+      orderPath = '/order-soweto';
     }
     
     navigate(`${orderPath}/${store.id}`, { replace: true });

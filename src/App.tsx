@@ -25,6 +25,7 @@ import { Shop } from './pages/Shop';
 import { OrderFoodies } from './pages/OrderFoodies';
 import { OrderClothes } from './pages/OrderClothes';
 import { OrderHardware } from './pages/OrderHardware';
+import { OrderSoweto } from './pages/OrderSoweto';
 import { FoodiesRoute } from './pages/FoodiesRoute';
 import { FoodDelivery } from './pages/FoodDelivery';
 import { OrderTrackingPage } from './pages/OrderTrackingPage';
@@ -362,6 +363,10 @@ function AppContent({ userId }: { userId: string }) {
               <Route
                 path="/order-hardware/:storeId"
                 element={<PageTransition><OrderHardware /></PageTransition>}
+              />
+              <Route
+                path="/order-soweto/:storeId"
+                element={<PageTransition><OrderSoweto /></PageTransition>}
               />
               <Route
                 path="/foodies-route"
