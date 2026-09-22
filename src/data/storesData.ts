@@ -28,7 +28,7 @@ export interface Product {
   imageUrl: string;
   price: number;
   category?: string;
-  foodCategory?: 'dry_food' | 'fruits' | 'utensils' | 'vegetables';
+  foodCategory?: string;
   unit?: string; // e.g. "15kg", "500ml" — shown next to the product
 }
 

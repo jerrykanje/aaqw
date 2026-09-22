@@ -40,6 +40,7 @@ export const OrderFoodies: React.FC = () => {
   const [storeName, setStoreName] = useState('');
   const [storeAddress, setStoreAddress] = useState('');
   const [loading, setLoading] = useState(true);
+  const [selectedFoodCategory, setSelectedFoodCategory] = useState('food');
   // Product the user tried to add when blocked by the cross-store guard
   const [pendingProduct, setPendingProduct] = useState<Product | null>(null);
 
@@ -142,6 +143,16 @@ export const OrderFoodies: React.FC = () => {
     }
   };
 
+  const foodTabs = [
+    { value: 'food', label: 'Food' },
+    { value: 'drinks', label: 'Drinks' },
+    { value: 'dessert', label: 'Dessert' }
+  ];
+
+  const filteredProducts = products.filter((product) =>
+    (product.foodCategory || 'food').toLowerCase() === selectedFoodCategory
+  );
+
   if (loading) {
     return (
       <motion.div
@@ -232,8 +243,36 @@ export const OrderFoodies: React.FC = () => {
         className="flex-1 overflow-y-auto px-4 pb-24 pt-4"
         style={{ marginTop: '120px' }}
       >
-        <div className="grid grid-cols-2 gap-4">
-          {products.map((product) => {
+        <div
+          className="mb-4 flex gap-2 overflow-x-auto pb-1"
+          role="tablist"
+          aria-label="Food categories"
+        >
+          {foodTabs.map((tab) => {
+            const isSelected = selectedFoodCategory === tab.value;
+
+            return (
+              <button
+                key={tab.value}
+                type="button"
+                role="tab"
+                aria-selected={isSelected}
+                onClick={() => setSelectedFoodCategory(tab.value)}
+                className={`shrink-0 rounded-full px-5 py-2 text-sm font-semibold transition-colors ${
+                  isSelected
+                    ? 'bg-purple-600 text-white shadow-sm'
+                    : 'bg-white text-gray-600 shadow-sm hover:bg-purple-50 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800'
+                }`}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {filteredProducts.length > 0 ? (
+          <div className="grid grid-cols-2 gap-4">
+            {filteredProducts.map((product) => {
             const count = getProductCount(product.id);
 
             return (
@@ -308,8 +347,13 @@ export const OrderFoodies: React.FC = () => {
                 </div>
               </motion.div>
             );
-          })}
-        </div>
+            })}
+          </div>
+        ) : (
+          <div className="rounded-lg bg-white px-4 py-10 text-center text-sm text-gray-500 shadow-sm dark:bg-gray-900 dark:text-gray-400">
+            No {selectedFoodCategory} available yet.
+          </div>
+        )}
       </motion.div>
 
       <div className="fixed bottom-0 left-0 right-0 z-10 bg-white dark:bg-gray-900 px-4 py-3 border-t border-gray-100 dark:border-gray-800">
