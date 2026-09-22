@@ -7,6 +7,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { db } from '../config/firebase';
 import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { subscribeToOrder, cancelOrder } from '../services/orderService';
+import { usePreventBack } from '../hooks/usePreventBack';
 
 interface WaitingForDriverProps {
   destination: string;
@@ -37,6 +38,7 @@ export const WaitingForDriver: React.FC<WaitingForDriverProps> = ({
   const [isScanning, setIsScanning] = useState(true);
   const { createRide, currentRide, isLoading } = useFirebaseRide(currentRideId);
   const { profile } = useUserProfile();
+  usePreventBack(true);
 
   const { 
     orderType = 'ride', 

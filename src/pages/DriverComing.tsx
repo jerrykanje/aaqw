@@ -16,6 +16,7 @@ import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { listenToDriverLocation } from '../services/trackingService';
 import { trimPolylineFromPosition } from '../utils/polylineUtils';
 import { soundManager } from '../utils/notificationSound';
+import { usePreventBack } from '../hooks/usePreventBack';
 import { 
   subscribeToOrder, 
   cancelOrder, 
@@ -125,6 +126,7 @@ export const DriverComing: React.FC<DriverComingProps> = ({
   const [isMessagePanelOpen, setIsMessagePanelOpen] = useState(false);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const [showCancelConfirmation, setShowCancelConfirmation] = useState(false);
+  usePreventBack(!['completed', 'cancelled', 'delivered'].includes(rideStatus) || isRatingModalOpen);
   const [foodOrderDetails, setFoodOrderDetails] = useState<any>(null);
   const [serviceRequestDetails, setServiceRequestDetails] = useState<any>(null);
   const [firestoreRideData, setFirestoreRideData] = useState<any>(null);

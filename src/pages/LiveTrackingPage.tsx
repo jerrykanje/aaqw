@@ -14,6 +14,7 @@ import { useMessageContext } from '../contexts/MessageContext';
 import { useUserProfile } from '../hooks/useUserProfile';
 import { auth } from '../config/firebase';
 import { soundManager } from '../utils/notificationSound';
+import { usePreventBack } from '../hooks/usePreventBack';
 
 interface OrderItem {
   name: string;
@@ -170,6 +171,7 @@ export const LiveTrackingPage: React.FC = () => {
   const [statusSubtitle, setStatusSubtitle] = useState<string>('Tracking your delivery');
   const [showRatingModal, setShowRatingModal] = useState<boolean>(false);
   const [activePolyline, setActivePolyline] = useState<string | null>(null);
+  usePreventBack(!['completed', 'cancelled', 'delivered'].includes(orderData.status || '') || showRatingModal);
   const [trimmedPolyline, setTrimmedPolyline] = useState<string | null>(null);
   const fullPolylineRef = useRef<string | null>(null);
   const [showRouteOverlay, setShowRouteOverlay] = useState(false);

@@ -6,6 +6,7 @@ import { db } from '../config/firebase';
 import { doc, onSnapshot, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { soundManager } from '../utils/notificationSound';
 import { useGlobalCart } from '../contexts/GlobalCartContext';
+import { usePreventBack } from '../hooks/usePreventBack';
 
 interface OrderItem {
   name: string;
@@ -183,6 +184,7 @@ export const OrderTrackingPage: React.FC = () => {
   const [showFeeConfirmation, setShowFeeConfirmation] = useState(false);
   const [selectedCancellationReason, setSelectedCancellationReason] = useState<string | null>(null);
   const [isCancelling, setIsCancelling] = useState(false);
+  usePreventBack(!['completed', 'cancelled', 'delivered'].includes(orderData.status || ''));
   
   // Refs for timeouts
   const preparingDelayRef = useRef<NodeJS.Timeout | null>(null);
