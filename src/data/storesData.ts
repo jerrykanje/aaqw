@@ -1,4 +1,4 @@
-export type StoreCategory = 'food' | 'clothes' | 'hardware';
+export type StoreCategory = 'food' | 'clothes' | 'hardware' | 'market';
 
 export interface OpeningHours {
   [day: string]: {

@@ -49,6 +49,13 @@ export const AletwendeSend: React.FC = () => {
       icon: '🏗️',
       color: 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800 hover:border-amber-300 dark:hover:border-amber-700',
       description: 'Building materials'
+    },
+    {
+      id: 'soweto-market',
+      label: 'Soweto Market',
+      icon: '🛒',
+      color: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 hover:border-green-300 dark:hover:border-green-700',
+      description: 'Fresh market goods'
     }
   ];
 
@@ -79,6 +86,8 @@ export const AletwendeSend: React.FC = () => {
       navigate('/shop', { state: { category: 'clothes' } });
     } else if (categoryId === 'hardware') {
       navigate('/shop', { state: { category: 'hardware' } });
+    } else if (categoryId === 'soweto-market') {
+      navigate('/shop', { state: { category: 'market' } });
     } else if (categoryId === 'package') {
       navigate('/your-route', { state: { serviceType: 'package' } });
     } else if (categoryId === 'towing') {
