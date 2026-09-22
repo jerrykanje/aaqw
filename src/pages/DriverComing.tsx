@@ -17,6 +17,7 @@ import { listenToDriverLocation } from '../services/trackingService';
 import { trimPolylineFromPosition } from '../utils/polylineUtils';
 import { soundManager } from '../utils/notificationSound';
 import { usePreventBack } from '../hooks/usePreventBack';
+import { useGeolocation } from '../hooks/useGeolocation';
 import { 
   subscribeToOrder, 
   cancelOrder, 
@@ -98,6 +99,7 @@ export const DriverComing: React.FC<DriverComingProps> = ({
   const navigate = useNavigate();
   const location = useLocation();
   const { profile } = useUserProfile(auth.currentUser?.uid);
+  const { latitude, longitude } = useGeolocation();
   const { currentRide } = useFirebaseRide(currentRideId);
   const { unreadMessageCount, markMessagesAsRead } = useMessageContext();
 
@@ -227,8 +229,8 @@ export const DriverComing: React.FC<DriverComingProps> = ({
           photo: driverFromOrder.profilePicture || driverFromOrder.profileImage || driverFromOrder.photo || '',
           phone: driverFromOrder.phone || '',
           location: {
-            latitude: driverFromOrder.location?.lat || -26.2041,
-            longitude: driverFromOrder.location?.lng || 28.0473
+            latitude: driverFromOrder.location?.lat ?? (latitude ?? -15.3875),
+            longitude: driverFromOrder.location?.lng ?? (longitude ?? 28.3228)
           }
         };
         setDriverInfo(mappedDriver);
@@ -490,7 +492,9 @@ export const DriverComing: React.FC<DriverComingProps> = ({
         <MapLibreMap
           center={driverLocation || (orderData?.pickupCoords?.lat && orderData?.pickupCoords?.lng 
             ? { lat: orderData.pickupCoords.lat, lng: orderData.pickupCoords.lng } 
-            : { lat: -26.2041, lng: 28.0473 })}
+            : latitude != null && longitude != null
+    ? { lat: latitude, lng: longitude }
+    : { lat: -15.3875, lng: 28.3228 })}
           zoom={14}
           markers={mapMarkers}
           driverPosition={driverLocation || undefined}

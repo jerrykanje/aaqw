@@ -15,6 +15,7 @@ import { useUserProfile } from '../hooks/useUserProfile';
 import { auth } from '../config/firebase';
 import { soundManager } from '../utils/notificationSound';
 import { usePreventBack } from '../hooks/usePreventBack';
+import { useGeolocation } from '../hooks/useGeolocation';
 
 interface OrderItem {
   name: string;
@@ -160,6 +161,7 @@ export const LiveTrackingPage: React.FC = () => {
   const { orderId, orderData: initialOrderData } = location.state || {};
   const { clearCart } = useGlobalCart();
   const { profile } = useUserProfile(auth.currentUser?.uid);
+  const { latitude, longitude } = useGeolocation();
   const { unreadMessageCount, markMessagesAsRead } = useMessageContext();
 
   const [orderData, setOrderData] = useState<OrderData>(initialOrderData || {});
@@ -500,7 +502,9 @@ export const LiveTrackingPage: React.FC = () => {
             ? { lat: driverLocation.lat, lng: driverLocation.lng }
             : orderData.storeLocation?.lat && orderData.storeLocation?.lng 
               ? { lat: orderData.storeLocation.lat, lng: orderData.storeLocation.lng } 
-              : { lat: -26.2041, lng: 28.0473 }}
+              : latitude != null && longitude != null
+    ? { lat: latitude, lng: longitude }
+    : { lat: -15.3875, lng: 28.3228 }}
           zoom={14}
           markers={mapMarkers}
           polyline={showRouteOverlay ? (trimmedPolyline ?? undefined) : undefined}

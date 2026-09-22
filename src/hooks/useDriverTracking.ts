@@ -6,6 +6,8 @@ useDriverTracking.ts
 
 import { useState, useEffect, useCallback } from 'react';
 import { firebaseService } from '../services/firebaseService';
+import { useGeolocation } from './useGeolocation';
+import { LUSAKA_DEFAULT } from './useNearbyDrivers';
 
 interface DriverLocation {
   latitude: number;
@@ -26,6 +28,10 @@ export const useDriverTracking = (rideId: string) => {
   const [driverInfo, setDriverInfo] = useState<DriverInfo | null>(null);
   const [rideStatus, setRideStatus] = useState<string>('pending');
   const [eta, setEta] = useState<number>(0);
+  const { latitude, longitude } = useGeolocation();
+  const userLocation = latitude != null && longitude != null
+    ? { lat: latitude, lng: longitude }
+    : LUSAKA_DEFAULT;
 
   // Calculate distance using Haversine formula (placeholder for Google Directions API)
   const calculateDistance = useCallback((lat1: number, lon1: number, lat2: number, lon2: number): number => {
@@ -65,13 +71,11 @@ export const useDriverTracking = (rideId: string) => {
               
               // Calculate ETA when location updates (placeholder for user's location)
               if (location) {
-                const userLat = -26.2041; // Placeholder user location
-                const userLon = 28.0473;
                 const distance = calculateDistance(
                   location.latitude,
                   location.longitude,
-                  userLat,
-                  userLon
+                  userLocation.lat,
+                  userLocation.lng
                 );
                 const estimatedETA = calculateETA(distance);
                 setEta(estimatedETA);
@@ -85,22 +89,20 @@ export const useDriverTracking = (rideId: string) => {
     });
 
     return unsubscribeRideStatus;
-  }, [rideId, calculateDistance, calculateETA]);
+  }, [rideId, calculateDistance, calculateETA, userLocation.lat, userLocation.lng]);
 
   const isDriverNearby = useCallback((thresholdMeters: number = 50): boolean => {
     if (!driverLocation) return false;
     
-    const userLat = -26.2041; // Placeholder user location
-    const userLon = 28.0473;
     const distance = calculateDistance(
       driverLocation.latitude,
       driverLocation.longitude,
-      userLat,
-      userLon
+      userLocation.lat,
+      userLocation.lng
     );
     
     return distance <= thresholdMeters;
-  }, [driverLocation, calculateDistance]);
+  }, [driverLocation, calculateDistance, userLocation.lat, userLocation.lng]);
 
   return {
     driverLocation,

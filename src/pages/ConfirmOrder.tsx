@@ -458,7 +458,9 @@ export const ConfirmOrder: React.FC<ConfirmOrderProps> = ({
         <MapLibreMap
           center={pickupCoords?.lat && pickupCoords?.lng 
             ? { lat: pickupCoords.lat, lng: pickupCoords.lng } 
-            : { lat: -26.2041, lng: 28.0473 }}
+            : latitude != null && longitude != null
+    ? { lat: latitude, lng: longitude }
+    : { lat: -15.3875, lng: 28.3228 }}
           zoom={14}
           markers={mapMarkers}
           polyline={encodedPolyline ?? undefined}
