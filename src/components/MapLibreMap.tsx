@@ -370,6 +370,7 @@ export const MapLibreMap: React.FC<MapLibreMapProps> = ({
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<{ [key: string]: maplibregl.Marker }>({});
+  const markerAnimationFramesRef = useRef<{ [key: string]: number }>({});
   const driverMarkerRef = useRef<maplibregl.Marker | null>(null);
   const etaBubbleRef = useRef<maplibregl.Marker | null>(null);
   const arrivalCardRef = useRef<maplibregl.Marker | null>(null);
@@ -405,6 +406,8 @@ export const MapLibreMap: React.FC<MapLibreMapProps> = ({
     }
 
     return () => {
+      Object.values(markerAnimationFramesRef.current).forEach(cancelAnimationFrame);
+      markerAnimationFramesRef.current = {};
       map.current?.remove();
       map.current = null;
     };
@@ -417,6 +420,11 @@ export const MapLibreMap: React.FC<MapLibreMapProps> = ({
     // Remove old markers that are no longer in the list
     Object.keys(markersRef.current).forEach(id => {
       if (!markers.find(m => m.id === id)) {
+        const animationFrame = markerAnimationFramesRef.current[id];
+        if (animationFrame !== undefined) {
+          cancelAnimationFrame(animationFrame);
+          delete markerAnimationFramesRef.current[id];
+        }
         markersRef.current[id].remove();
         delete markersRef.current[id];
       }
@@ -424,9 +432,46 @@ export const MapLibreMap: React.FC<MapLibreMapProps> = ({
 
     // Add/update markers
     markers.forEach(marker => {
-      if (markersRef.current[marker.id]) {
-        // Update existing marker position
-        markersRef.current[marker.id].setLngLat([marker.lng, marker.lat]);
+      const existingMarker = markersRef.current[marker.id];
+      if (existingMarker) {
+        if (marker.type === 'driver') {
+          const previousAnimationFrame = markerAnimationFramesRef.current[marker.id];
+          if (previousAnimationFrame !== undefined) {
+            cancelAnimationFrame(previousAnimationFrame);
+          }
+
+          const currentPosition = existingMarker.getLngLat();
+          const targetLng = marker.lng;
+          const targetLat = marker.lat;
+
+          if (currentPosition.lng === targetLng && currentPosition.lat === targetLat) {
+            delete markerAnimationFramesRef.current[marker.id];
+            return;
+          }
+
+          const startTime = performance.now();
+          const duration = 1000;
+
+          const animateNearbyDriver = (timestamp: number) => {
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const lng = currentPosition.lng + (targetLng - currentPosition.lng) * eased;
+            const lat = currentPosition.lat + (targetLat - currentPosition.lat) * eased;
+
+            existingMarker.setLngLat([lng, lat]);
+
+            if (progress < 1) {
+              markerAnimationFramesRef.current[marker.id] = requestAnimationFrame(animateNearbyDriver);
+            } else {
+              delete markerAnimationFramesRef.current[marker.id];
+            }
+          };
+
+          markerAnimationFramesRef.current[marker.id] = requestAnimationFrame(animateNearbyDriver);
+        } else {
+          // Non-driver markers continue to snap to their new position.
+          existingMarker.setLngLat([marker.lng, marker.lat]);
+        }
       } else {
         // Create new marker
         const el = marker.type === 'driver'
