@@ -36,7 +36,7 @@ export const useNearbyDrivers = (latitude: number | null, longitude: number | nu
     }
 
     return () => { cancelled = true; };
-  }, [onlineDrivers, profileColors]);
+  }, [onlineDrivers]);
 
   useEffect(() => {
     const stopDrivers = rideService.startDriversListener((drivers) => {
