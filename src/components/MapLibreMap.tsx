@@ -94,8 +94,8 @@ interface MapLibreMapProps {
 const vehicleIconMap: Record<string, string> = {
   bicycle: '/cars/bicycle.png',
   motorbike: '/cars/motorbike.png',
-  car: '/cars/economy.png',
-  economy: '/cars/economy.png',
+  car: '/cars/acarg.png',
+  economy: '/cars/acarg.png',
   comfort: '/cars/comfort.png',
   premium: '/cars/premium.png',
   xl: '/cars/xl.png',
@@ -109,7 +109,7 @@ const vehicleIconMap: Record<string, string> = {
 
 const getVehicleIconUrl = (vehicleType?: string, vehicleColor?: string): string => {
   if (vehicleColor) return getDriverVehicleIcon(vehicleType || 'car', vehicleColor);
-  return vehicleIconMap[(vehicleType || '').toLowerCase()] || '/cars/economy.png';
+  return vehicleIconMap[(vehicleType || '').toLowerCase()] || '/cars/acarg.png';
 };
 
 // Create the animated driver vehicle marker (replaces the bubble at the polyline start).

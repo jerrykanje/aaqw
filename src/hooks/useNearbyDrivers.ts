@@ -56,7 +56,7 @@ export const useNearbyDrivers = (latitude: number | null, longitude: number | nu
     return Array.from(onlineDrivers.entries()).flatMap(([driverId, driver]) => {
       const location = locations.get(driverId);
       if (!location || calculateDistance(latitude, longitude, location.lat, location.lng) > MAX_DISTANCE_KM) return [];
-      return [{ id: `nearby-driver-${driverId}`, type: 'driver' as const, lat: location.lat, lng: location.lng, label: driver.vehicleCategory, vehicleType: driver.vehicleCategory, vehicleColor: driver.vehicleColor ?? profileColors.get(driverId) }];
+      return [{ id: `nearby-driver-${driverId}`, type: 'driver' as const, lat: location.lat, lng: location.lng, label: driver.vehicleCategory, vehicleType: driver.vehicleCategory, vehicleColor: driver.vehicleColor || profileColors.get(driverId) }];
     });
   }, [latitude, longitude, locations, onlineDrivers, profileColors]);
 };

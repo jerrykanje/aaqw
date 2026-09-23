@@ -271,7 +271,7 @@ class RideService {
               this.onlineDriversCache.set(driverId, {
                 driverId,
                 vehicleCategory: driver.vehicleCategory || '',
-                vehicleColor: driver.color || driver.vehicleColor || driver.vehicle?.color || '',
+                vehicleColor: driver.color || driver.vehicleColor || driver.vehicle?.color || undefined,
                 isOnline: driver.isOnline,
                 isBusy: driver.isBusy
               });
