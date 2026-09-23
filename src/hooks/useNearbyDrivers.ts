@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { rideService } from '../services/rideService';
 import { calculateDistance } from '../utils/etaCalculation';
-import { MapMarker } from '../components/MapLibreMap';
+import type { MapMarker } from '../components/MapLibreMap';
 import { db } from '../config/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
