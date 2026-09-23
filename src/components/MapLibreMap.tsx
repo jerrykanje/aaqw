@@ -38,7 +38,7 @@ const OSM_RASTER_STYLE = {
 
 export interface MapMarker {
   id: string;
-  type: 'pickup' | 'dropoff' | 'stop' | 'driver' | 'store';
+  type: 'pickup' | 'dropoff' | 'stop' | 'driver' | 'store' | 'currentLocation';
   lat: number;
   lng: number;
   label?: string;
@@ -266,6 +266,20 @@ const createMarkerElement = (type: MapMarker['type'], label?: string): HTMLEleme
       `;
       break;
       
+    case 'currentLocation':
+      el.innerHTML = `
+        <div class="marker-animate-in" style="
+          width: 18px;
+          height: 18px;
+          background: #5B2EFF;
+          border: 3px solid white;
+          border-radius: 50%;
+          box-shadow: 0 2px 8px rgba(91, 46, 255, 0.5);
+          animation: markerBounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards, markerPulse 2s ease-in-out infinite 0.5s;
+        "></div>
+      `;
+      break;
+
     case 'store':
       el.innerHTML = `
         <div class="marker-animate-in" style="
@@ -564,8 +578,8 @@ export const MapLibreMap: React.FC<MapLibreMapProps> = ({
           // Keep the route close in frame rather than pulling the camera back
           // for the covered bottom panel. The route itself is the focal point.
           padding: { top: 56, bottom: 128, left: 40, right: 40 },
-          maxZoom: 17,
-          duration: 1400,
+          maxZoom: 15,
+          duration: 800,
           easing: (t) => t * (2 - t),
           essential: true
         });

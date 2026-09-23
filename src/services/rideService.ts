@@ -62,6 +62,7 @@ export interface VehicleMaster {
 export interface OnlineDriver {
   driverId: string;
   vehicleCategory: string;
+  vehicleColor?: string;
   isOnline: boolean;
   isBusy: boolean;
   location?: {
@@ -270,6 +271,7 @@ class RideService {
               this.onlineDriversCache.set(driverId, {
                 driverId,
                 vehicleCategory: driver.vehicleCategory || '',
+                vehicleColor: driver.color || driver.vehicleColor || driver.vehicle?.color || '',
                 isOnline: driver.isOnline,
                 isBusy: driver.isBusy
               });

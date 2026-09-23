@@ -138,7 +138,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ onSearchSelect }) => {
         <MapLibreMap
   center={latitude && longitude ? { lat: latitude, lng: longitude } : LUSAKA_DEFAULT}
   zoom={13}
-  markers={nearbyDrivers}
+  markers={[
+    ...(latitude != null && longitude != null ? [{ id: 'current-location', type: 'currentLocation' as const, lat: latitude, lng: longitude }] : []),
+    ...nearbyDrivers
+  ]}
   fitBounds={false}
           className="w-full h-full"
         />

@@ -403,8 +403,16 @@ export const SelectRide: React.FC<SelectRideProps> = ({
         });
       }
     });
-    return markers;
-  }, [location.state?.stopCoords]);
+    if (pickupCoords?.lat != null && pickupCoords?.lng != null) {
+    markers.unshift({
+      id: 'current-location',
+      type: 'currentLocation',
+      lat: pickupCoords.lat,
+      lng: pickupCoords.lng
+    });
+  }
+  return markers;
+  }, [location.state?.stopCoords, pickupCoords]);
 
   // Calculate arrival time based on ETA
   const getArrivalTime = useCallback(() => {

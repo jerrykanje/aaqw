@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, PanInfo, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { X, Plus, Calendar, User, Briefcase, ChevronDown, RefreshCw, Users } from 'lucide-react';
 import { useGlobalCart } from '../contexts/GlobalCartContext';
+import { useGeolocation } from '../hooks/useGeolocation';
 import { apiPost } from '../config/api';
 import { MapLibreMap, MapMarker } from '../components/MapLibreMap';
 import { useNearbyDrivers, LUSAKA_DEFAULT } from '../hooks/useNearbyDrivers';
@@ -52,6 +53,7 @@ export function FoodDelivery() {
   const navigate = useNavigate();
   const location = useLocation();
   const { cart, getKgRange } = useGlobalCart();
+  const { latitude, longitude } = useGeolocation();
 
   // Load data from localStorage (from FoodiesRoute)
   const [routeData, setRouteData] = useState<any>(() => {
@@ -73,7 +75,7 @@ export function FoodDelivery() {
   const [error, setError] = useState('');
   const [selectedOption, setSelectedOption] = useState<BackendRideOption | null>(null);
   const [routePolyline, setRoutePolyline] = useState<string | null>(null);
-  const nearbyDrivers = useNearbyDrivers(routeData?.deliveryCoords?.lat ?? null, routeData?.deliveryCoords?.lng ?? null);
+  const nearbyDrivers = useNearbyDrivers(latitude, longitude);
 
   const [selectedFilter, setSelectedFilter] = useState<FilterTab>('standard');
   const [profileToggle, setProfileToggle] = useState<'personal' | 'business'>('personal');
@@ -440,8 +442,17 @@ navigate('/confirm-order', {
       });
     }
     
-    return [...markers, ...nearbyDrivers];
-  }, [routeData, nearbyDrivers]);
+    if (latitude != null && longitude != null) {
+    markers.unshift({
+      id: 'current-location',
+      type: 'currentLocation',
+      lat: latitude,
+      lng: longitude
+    });
+  }
+
+  return [...markers, ...nearbyDrivers];
+  }, [routeData, nearbyDrivers, latitude, longitude]);
 
   // Calculate arrival time
   const getArrivalTime = useCallback(() => {
